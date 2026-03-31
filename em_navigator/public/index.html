@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrueNorth LT — Emergency Medicine</title>
+<style>
+:root {
+  --red:#C0392B;--red-dark:#96281B;--red-light:#FDF2F1;--red-border:#F0C9C5;
+  --ink:#0F1117;--ink-2:#3D4152;--ink-3:#7A7F94;--ink-4:#B0B5C8;
+  --surface:#FFFFFF;--surface-2:#F7F7F9;--surface-3:#EEEEF2;
+  --border:#E2E2E8;--border-strong:#CACAD4;
+  --amber:#D97706;--amber-light:#FFFBEB;--amber-border:#FCD34D;--amber-ink:#78350F;
+  --green:#059669;--green-light:#ECFDF5;--green-border:#A7F3D0;
+  --r:8px;--rl:12px;--rxl:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--surface-2);color:var(--ink);min-height:100vh;font-size:14px;line-height:1.6}
+
+/* ── HEADER ── */
+.hdr{background:var(--ink);padding:0 1.5rem;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.hdr-logo{font-size:15px;font-weight:600;color:#fff;display:flex;align-items:center;gap:10px}
+.hdr-tag{font-size:11px;background:var(--red);color:#fff;padding:2px 9px;border-radius:4px;font-weight:500;letter-spacing:.03em}
+.hdr-right{display:flex;align-items:center;gap:8px}
+.hdr-badge{font-size:11px;color:var(--ink-4);font-weight:500;letter-spacing:.04em}
+.hdr-btn{padding:6px 14px;border-radius:var(--r);border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.7);font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.hdr-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+
+/* ── LAYOUT ── */
+.app{max-width:860px;margin:0 auto;padding:2rem 1.25rem 4rem}
+
+/* ── SHARED HERO ── */
+.setup-hero{background:var(--ink);border-radius:var(--rxl);padding:2rem 2.5rem;margin-bottom:1.25rem;position:relative;overflow:hidden}
+.setup-hero::after{content:'EM';position:absolute;right:2rem;top:50%;transform:translateY(-50%);font-size:100px;font-weight:700;color:rgba(255,255,255,.04);letter-spacing:-4px;pointer-events:none}
+.setup-eyebrow{font-size:11px;font-weight:600;color:var(--red);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.setup-title{font-size:26px;font-weight:600;color:#fff;margin-bottom:.4rem;letter-spacing:-.3px}
+.setup-sub{font-size:13px;color:var(--ink-4);line-height:1.6;max-width:480px}
+.hero-actions{display:flex;gap:8px;margin-top:1.5rem;flex-wrap:wrap}
+.hero-btn{padding:11px 20px;border-radius:var(--r);border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:rgba(255,255,255,.8);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.hero-btn:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.35);color:#fff}
+.hero-btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.hero-btn.primary:hover{background:var(--red-dark);border-color:var(--red-dark)}
+
+/* ── SETUP CARD ── */
+.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rxl);padding:1.75rem}
+.field-label{font-size:11px;font-weight:600;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.field-group{margin-bottom:1.25rem}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.toggle-row{display:flex;gap:8px}
+.toggle-btn{flex:1;padding:11px 14px;border-radius:var(--r);border:1px solid var(--border-strong);background:var(--surface);font-size:13px;color:var(--ink-2);cursor:pointer;text-align:center;transition:all .15s;font-family:inherit;font-weight:400}
+.toggle-btn:hover{border-color:var(--red);color:var(--red)}
+.toggle-btn.active{background:var(--red);border-color:var(--red);color:#fff;font-weight:600}
+.toggle-btn .sub{display:block;font-size:11px;opacity:.7;margin-top:2px;font-weight:400}
+input[type=text],input[type=email],input[type=tel]{width:100%;padding:10px 12px;border-radius:var(--r);border:1px solid var(--border-strong);background:var(--surface);font-size:13px;color:var(--ink);font-family:inherit}
+input[type=text]:focus,input[type=email]:focus,input[type=tel]:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(192,57,43,.1)}
+.start-btn{width:100%;padding:13px;border-radius:var(--r);border:none;background:var(--red);color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:.25rem;transition:background .15s;font-family:inherit;letter-spacing:.01em}
+.start-btn:hover{background:var(--red-dark)}
+
+/* ── CONTEXT STRIP ── */
+.context-strip{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1rem 1.5rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.ctx-mode{font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.ctx-title{font-size:16px;font-weight:600;color:var(--ink)}
+.ctx-sub{font-size:12px;color:var(--ink-3);margin-top:2px}
+.ctx-detail{font-size:11.5px;color:var(--ink-4);margin-top:3px;display:flex;gap:12px;flex-wrap:wrap}
+.ctx-detail span{display:flex;align-items:center;gap:4px}
+.new-call-btn{padding:7px 14px;border-radius:var(--r);border:1px solid var(--border-strong);background:var(--surface-2);font-size:12px;color:var(--ink-2);cursor:pointer;white-space:nowrap;font-family:inherit}
+.new-call-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* ── TABS ── */
+.tab-bar{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:4px;margin-bottom:1.25rem}
+.tab-btn{flex:1;padding:9px 12px;border-radius:var(--r);border:none;background:transparent;font-size:13px;color:var(--ink-3);cursor:pointer;font-weight:500;transition:all .15s;font-family:inherit}
+.tab-btn.active{background:var(--red);color:#fff;font-weight:600}
+.tab-btn:hover:not(.active){background:var(--surface-3);color:var(--ink-2)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+/* ── SECTION DIVIDER ── */
+.sec-div{font-size:11px;font-weight:700;color:var(--red-dark);letter-spacing:.08em;text-transform:uppercase;margin:1.25rem 0 8px;display:flex;align-items:center;gap:10px}
+.sec-div::after{content:'';flex:1;height:1px;background:var(--red-border)}
+
+/* ── QUESTION CARDS ── */
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1rem 1.25rem;margin-bottom:8px;transition:border-color .15s,background .15s}
+.q-card:focus-within{border-color:var(--red-border);box-shadow:0 0 0 2px rgba(192,57,43,.06)}
+.q-card.covered{border-color:var(--green-border);background:#f6fefb}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.q-num{font-size:10px;font-weight:700;color:var(--ink-4);letter-spacing:.05em;font-variant-numeric:tabular-nums}
+.q-tag{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600}
+.q-tag.specialty{background:var(--red-light);color:var(--red-dark)}
+.q-tag.general{background:var(--surface-3);color:var(--ink-3)}
+.q-check-wrap{margin-left:auto;display:flex;align-items:center;gap:6px}
+.q-check-label{font-size:11px;color:var(--ink-4);font-weight:500;user-select:none;cursor:pointer}
+.q-card.covered .q-check-label{color:var(--green)}
+.q-check{width:15px;height:15px;cursor:pointer;accent-color:var(--green);flex-shrink:0}
+.q-text{font-size:13px;color:var(--ink);line-height:1.65;margin-bottom:7px;font-weight:500}
+.q-card.covered .q-text{color:var(--ink-3)}
+.q-hint{font-size:12px;color:var(--ink-3);line-height:1.55;margin-bottom:10px;padding-left:10px;border-left:2px solid var(--red-border);font-style:italic}
+.q-note{width:100%;border:1px solid var(--border);border-radius:var(--r);padding:9px 11px;font-size:13px;color:var(--ink);font-family:inherit;background:var(--surface-2);resize:vertical;min-height:56px;transition:border-color .15s}
+.q-note:focus{outline:none;border-color:var(--red);background:var(--surface)}
+.q-note::placeholder{color:var(--ink-4);font-size:12px}
+
+/* ── CREDENTIALING ── */
+.cred-box{border-radius:var(--rl);padding:1.25rem 1.5rem;margin-bottom:10px}
+.cred-box.universal{background:var(--amber-light);border:1px solid var(--amber-border)}
+.cred-box.specialty{background:var(--red-light);border:1px solid var(--red-border)}
+.cred-box-title{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.cred-box.universal .cred-box-title{color:var(--amber-ink)}
+.cred-box.specialty .cred-box-title{color:var(--red-dark)}
+.cred-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.cred-box.universal .cred-dot{background:var(--amber)}
+.cred-box.specialty .cred-dot{background:var(--red)}
+.cred-item{font-size:12.5px;line-height:1.7;margin-bottom:5px;display:flex;align-items:flex-start;gap:9px}
+.cred-check{width:14px;height:14px;cursor:pointer;flex-shrink:0;margin-top:4px}
+.cred-box.universal .cred-check{accent-color:var(--amber)}
+.cred-box.specialty .cred-check{accent-color:var(--red)}
+.cred-item-text{flex:1}
+.cred-box.universal .cred-item{color:var(--amber-ink)}
+.cred-box.specialty .cred-item{color:var(--red-dark)}
+.cred-item.done .cred-item-text{text-decoration:line-through;opacity:.45}
+
+/* ── SUMMARY ── */
+.summary-actions{margin-top:1rem}
+.gen-btn{width:100%;padding:12px;border-radius:var(--r);border:1.5px solid var(--red);background:var(--surface);color:var(--red);font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
+.gen-btn:hover{background:var(--red-light)}
+.summary-box{display:none;margin-top:1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden}
+.summary-box.visible{display:block}
+.sum-top{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.sum-top-title{font-size:13px;font-weight:600;color:var(--ink)}
+.sum-top-actions{display:flex;gap:6px;flex-wrap:wrap}
+.copy-btn{padding:6px 14px;border-radius:var(--r);border:1px solid var(--border-strong);background:var(--surface-2);font-size:12px;color:var(--ink-2);cursor:pointer;font-family:inherit}
+.copy-btn:hover{border-color:var(--red);color:var(--red)}
+.save-session-btn{padding:6px 14px;border-radius:var(--r);border:1px solid var(--green-border);background:var(--green-light);font-size:12px;color:var(--green);cursor:pointer;font-family:inherit;font-weight:600;transition:all .15s}
+.save-session-btn:hover{background:var(--green);color:#fff;border-color:var(--green)}
+.save-session-btn:disabled{opacity:.5;cursor:default}
+.sum-body{padding:1.25rem;font-size:12px;color:var(--ink-2);line-height:1.9;white-space:pre-wrap;font-family:'SF Mono','Fira Code','Courier New',monospace;background:var(--surface-2);max-height:500px;overflow-y:auto}
+
+/* ── PROGRESS BAR ── */
+.progress-bar{height:3px;background:var(--surface-3);border-radius:2px;margin-bottom:1.25rem;overflow:hidden}
+.progress-fill{height:100%;background:var(--red);border-radius:2px;transition:width .4s ease}
+
+/* ── DASHBOARD SESSION CARDS ── */
+.session-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1.1rem 1.4rem;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:1rem;transition:border-color .15s}
+.session-card:hover{border-color:var(--border-strong)}
+.sc-left{flex:1;min-width:0}
+.sc-date{font-size:11px;font-weight:600;color:var(--ink-4);letter-spacing:.04em;margin-bottom:4px}
+.sc-contact{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sc-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.04em;flex-shrink:0}
+.sc-badge.recruiter{background:var(--red-light);color:var(--red-dark)}
+.sc-badge.sales{background:var(--amber-light);color:var(--amber-ink)}
+.sc-stat{font-size:11.5px;color:var(--ink-3)}
+.sc-right{display:flex;gap:6px;flex-shrink:0}
+.sc-view-btn{padding:7px 14px;border-radius:var(--r);border:1px solid var(--border-strong);background:var(--surface-2);font-size:12px;color:var(--ink-2);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
+.sc-view-btn:hover{border-color:var(--red);color:var(--red)}
+.sc-del-btn{padding:7px 10px;border-radius:var(--r);border:1px solid var(--border);background:var(--surface);font-size:13px;color:var(--ink-4);cursor:pointer;font-family:inherit;transition:all .15s;line-height:1}
+.sc-del-btn:hover{border-color:var(--red-border);background:var(--red-light);color:var(--red)}
+.dash-empty{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:3rem 1rem;text-align:center;margin-top:1.25rem}
+.dash-empty-icon{font-size:28px;margin-bottom:.75rem;opacity:.35}
+.dash-empty-title{font-size:14px;font-weight:600;color:var(--ink-2);margin-bottom:.25rem}
+.dash-empty-sub{font-size:12.5px;color:var(--ink-3)}
+
+/* ── DETAIL SCREEN ── */
+.det-back{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:var(--r);border:1px solid var(--border-strong);background:var(--surface);font-size:12px;color:var(--ink-2);cursor:pointer;font-family:inherit;margin-bottom:1.25rem;transition:all .15s}
+.det-back:hover{border-color:var(--red);color:var(--red)}
+.det-header{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1.25rem 1.5rem;margin-bottom:1rem}
+.det-contact{font-size:20px;font-weight:600;color:var(--ink);margin-bottom:.4rem}
+.det-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.det-date{font-size:12px;color:var(--ink-3)}
+.det-summary-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden}
+.det-sum-top{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.det-sum-title{font-size:13px;font-weight:600;color:var(--ink)}
+.det-sum-body{padding:1.25rem;font-size:12px;color:var(--ink-2);line-height:1.9;white-space:pre-wrap;font-family:'SF Mono','Fira Code','Courier New',monospace;background:var(--surface-2);max-height:600px;overflow-y:auto}
+
+/* ── ANIM ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fadeup{animation:fadeUp .25s ease}
+
+@media(max-width:600px){
+  .toggle-row{flex-direction:column}
+  .context-strip{flex-direction:column;align-items:flex-start}
+  .session-card{flex-direction:column;align-items:flex-start}
+  .sc-right{width:100%}
+  .sc-view-btn,.sc-del-btn{flex:1;text-align:center}
+  .field-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-logo">
+    TrueNorth LT
+    <span class="hdr-tag">Emergency Medicine</span>
+  </div>
+  <div class="hdr-right">
+    <span class="hdr-badge">PROTOTYPE v2.0</span>
+    <button class="hdr-btn" id="hdr-dash-btn" onclick="showDashboard()" style="display:none">Dashboard</button>
+    <button class="hdr-btn" id="hdr-new-btn" onclick="resetApp()" style="display:none">New call</button>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- ══════════════════════════════════════
+       DASHBOARD SCREEN
+  ══════════════════════════════════════ -->
+  <div id="dashboard-screen" style="display:none" class="fadeup">
+    <div class="setup-hero">
+      <div class="setup-eyebrow">Dashboard</div>
+      <div class="setup-title">Call history</div>
+      <div class="setup-sub">Review past call summaries or start a new session.</div>
+      <div class="hero-actions">
+        <button class="hero-btn primary" onclick="resetApp()">New call +</button>
+      </div>
+    </div>
+    <div id="session-list"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       DETAIL SCREEN
+  ══════════════════════════════════════ -->
+  <div id="detail-screen" style="display:none" class="fadeup">
+    <button class="det-back" onclick="showDashboard()">&#8592; Back to dashboard</button>
+    <div class="det-header">
+      <div class="det-contact" id="det-contact"></div>
+      <div class="det-meta">
+        <span class="sc-badge" id="det-badge"></span>
+        <span class="det-date" id="det-date"></span>
+        <span class="sc-stat" id="det-stat"></span>
+      </div>
+    </div>
+    <div class="det-summary-box">
+      <div class="det-sum-top">
+        <div class="det-sum-title">Call summary</div>
+        <button class="copy-btn" onclick="copyDetail()">Copy</button>
+      </div>
+      <div class="det-sum-body" id="det-sum-body"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SETUP SCREEN
+  ══════════════════════════════════════ -->
+  <div id="setup-screen" style="display:none" class="fadeup">
+    <div class="setup-hero">
+      <div class="setup-eyebrow">Emergency Medicine</div>
+      <div class="setup-title">Call preparation guide</div>
+      <div class="setup-sub">Specialty-specific questions sourced from experienced EM recruiters and account managers. Built for locums.</div>
+    </div>
+    <div class="setup-card">
+      <div class="field-group">
+        <div class="field-label">Your role on this call</div>
+        <div class="toggle-row">
+          <button class="toggle-btn active" id="btn-rec" onclick="setMode('recruiter')">
+            Recruiter
+            <span class="sub">Talking to an EM provider</span>
+          </button>
+          <button class="toggle-btn" id="btn-sal" onclick="setMode('sales')">
+            Sales / Account Manager
+            <span class="sub">Talking to a facility client</span>
+          </button>
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Contact name (optional)</div>
+        <input type="text" id="contact-name" placeholder="e.g. Dr. Sarah Kim or Memorial Hospital ED">
+      </div>
+      <div class="field-group">
+        <div class="field-label">NPI</div>
+        <input type="text" id="contact-npi" placeholder="10-digit NPI number">
+      </div>
+      <div class="field-group">
+        <div class="field-row">
+          <div>
+            <div class="field-label">Email</div>
+            <input type="email" id="contact-email" placeholder="email@example.com">
+          </div>
+          <div>
+            <div class="field-label">Phone</div>
+            <input type="tel" id="contact-phone" placeholder="(555) 000-0000">
+          </div>
+        </div>
+      </div>
+      <button class="start-btn" onclick="startSession()">Load EM call guide</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SESSION SCREEN
+  ══════════════════════════════════════ -->
+  <div id="session-screen" style="display:none" class="fadeup">
+
+    <div class="context-strip">
+      <div style="flex:1;min-width:0">
+        <div class="ctx-mode" id="ctx-mode"></div>
+        <div class="ctx-title" id="ctx-title"></div>
+        <div class="ctx-sub" id="ctx-sub"></div>
+        <div class="ctx-detail" id="ctx-detail"></div>
+      </div>
+      <button class="new-call-btn" onclick="resetApp()">New call</button>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tab-q" onclick="switchTab('q')">Questions <span id="q-count-label"></span></button>
+      <button class="tab-btn" id="tab-c" onclick="switchTab('c')">Credentialing</button>
+      <button class="tab-btn" id="tab-s" onclick="switchTab('s')">Summary</button>
+    </div>
+
+    <!-- QUESTIONS TAB -->
+    <div class="tab-panel active" id="panel-q">
+      <div id="q-list"></div>
+    </div>
+
+    <!-- CREDENTIALING TAB -->
+    <div class="tab-panel" id="panel-c">
+      <div id="cred-content"></div>
+    </div>
+
+    <!-- SUMMARY TAB -->
+    <div class="tab-panel" id="panel-s">
+      <div class="summary-actions">
+        <button class="gen-btn" onclick="generateSummary()">Generate call summary</button>
+      </div>
+      <div class="summary-box" id="summary-box">
+        <div class="sum-top">
+          <div class="sum-top-title">Call summary — ready to copy or save.</div>
+          <div class="sum-top-actions">
+            <button class="copy-btn" onclick="copySummary()">Copy</button>
+            <button class="save-session-btn" id="save-session-btn" onclick="saveSession()">Save to dashboard</button>
+          </div>
+        </div>
+        <div class="sum-body" id="sum-body"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA — EMERGENCY MEDICINE
+// ═══════════════════════════════════════════════════════════════
+
+const EM_DATA = {
+  recruiter: {
+    sections: [
+      {
+        title: "Practice background",
+        tag: "specialty",
+        questions: [
+          { q: "Walk me through your current ED role. What type of facility is it, what is the annual visit volume, and how would you describe the acuity level?", hint: "This is your baseline. A physician working a 15,000-visit rural ED has entirely different expectations than one in a 90,000-visit urban trauma center. Know their current environment before describing any opportunity." },
+          { q: "What is the trauma designation at your current facility and are you comfortable working at Level I and Level II trauma centers?", hint: "Trauma level determines ATLS requirements, case log expectations, and the intensity of the environment. Never present a non-trauma provider to a Level I without having this conversation first." },
+          { q: "How many patients do you typically see per shift and what is your personal comfort ceiling?", hint: "Volume tolerance is a real differentiator. Some EM physicians cap out at 2 patients per hour. Others are comfortable at 3.5 to 4. Misaligning this causes early exits and damaged relationships." },
+          { q: "What is your current shift structure: 8-hour, 10-hour, or 12-hour shifts, and do you have a preference for days, nights, or rotating?", hint: "Scheduling preference is not a secondary concern. It is often the primary reason a provider takes or declines a locums role. Know this early and match accordingly." },
+          { q: "Are you the sole emergency physician coverage during your shifts, or do you work alongside other attendings or midlevel providers?", hint: "Solo coverage creates a fundamentally different experience than team coverage. Rural locums often means being the only physician in the building. Some providers thrive in that. Others will not accept it." }
+        ]
+      },
+      {
+        title: "Procedures and clinical scope",
+        tag: "specialty",
+        questions: [
+          { q: "What procedures are you credentialed and currently performing independently: endotracheal intubation, RSI, central line placement, chest tube insertion, thoracentesis, cricothyrotomy, cardioversion, pericardiocentesis, FAST ultrasound?", hint: "EM procedure scope is broad and facilities will ask for this specifically during credentialing. Get a complete list. Gaps in procedure capability can eliminate a candidate from certain roles without warning." },
+          { q: "Do you perform point-of-care ultrasound and what applications are you trained in: FAST, cardiac, aorta, lung, OB, nerve blocks?", hint: "POCUS is increasingly expected in emergency medicine. Some facilities require it. Others do not. Know the provider's training and whether they have a POCUS credential on file." },
+          { q: "Are you comfortable performing emergency airway management including RSI and surgical airway in a facility that may not have immediate anesthesia backup?", hint: "Rural and critical access EDs often have no anesthesia on site. Airway management capability and comfort without backup is a go/no-go question for those placements." },
+          { q: "Do you respond to floor codes as part of your current ED role and are you comfortable with that responsibility in a locums setting?", hint: "Floor code response is included in the scope at many community and rural hospitals. Providers discover this on day one if you do not ask now. Surface it explicitly." },
+          { q: "What is your experience with pediatric emergency patients and are you comfortable seeing all ages without a dedicated pediatric emergency physician available?", hint: "Pediatric EM comfort level matters for community EDs that do not have a separate peds ED. PALS certification is a minimum requirement and should be confirmed." }
+        ]
+      },
+      {
+        title: "Logistics and practice preferences",
+        tag: "specialty",
+        questions: [
+          { q: "What EMR systems have you worked in: Epic, Cerner, Meditech, Athena, or others? How quickly do you adapt to an unfamiliar system?", hint: "Day one in a new EMR can be rough for productivity and satisfaction. Knowing their EMR background helps you flag potential friction before it becomes a complaint that reflects on TrueNorth LT." },
+          { q: "Do you currently use scribes and is scribe support something that factors into your interest in a locums engagement?", hint: "Scribe availability is a genuine competitive differentiator in EM recruiting. If a facility offers scribes and a competitor does not, that matters. Know if it matters to this provider." },
+          { q: "Are you comfortable working in rural or critical access hospital EDs where specialist backup is limited and transfer may be the only option for certain cases?", hint: "Rural EM is a different professional commitment. Providers are making decisions for patients they cannot escalate quickly. This is not a fit for every physician and should never be assumed." },
+          { q: "How do you feel about facilities that use a fast track or split flow model? Would you be covering the main ED, the fast track, or both?", hint: "Fast track vs main ED are different scopes. A provider who thrives in high-acuity main ED work may find fast track unsatisfying, and vice versa. Know before matching." }
+        ]
+      },
+      {
+        title: "Availability and logistics",
+        tag: "specialty",
+        questions: [
+          { q: "What geographic areas are you open to for locums work and are there states or regions you will not consider?", hint: "Geographic openness defines your matching pool. Know their hard limits and their preferred regions. Some EM providers want warm weather. Others will go anywhere for the right rate." },
+          { q: "Are you currently licensed in any states outside your home state and do you have an active DEA registration in those states?", hint: "Existing out-of-state licenses are the single most powerful accelerant for locums starts. A provider with three active state licenses can potentially start in weeks. Know this on the first call." },
+          { q: "What is your realistic timeline to start your first locums engagement?", hint: "EM credentialing with ATLS, procedure verification, and malpractice history review takes time. If a provider wants to start in two weeks but has no out-of-state licenses, you have an expectations problem. Fix it now." },
+          { q: "How many days per month are you looking to work in a locums capacity alongside your current practice or other commitments?", hint: "Bandwidth determines what opportunities you can match this provider to. A physician open to 8 days per month is a different relationship than one who is going full-time locums." },
+          { q: "What daily rate or hourly rate would make a locums engagement genuinely worth your while given your current income?", hint: "Get a real number on the record on the first call. The worst outcome is investing 90 days in credentialing and then having a rate conversation that falls apart. Protect everyone's time." }
+        ]
+      },
+      {
+        title: "Credentialing readiness",
+        tag: "specialty",
+        questions: [
+          { q: "Is your board certification current through ABEM or AOBEM and when does it expire?", hint: "Board certification is verified by every facility. ABEM and AOBEM are the primary boards for EM. FM and IM board-certified physicians are accepted at some community EDs but not all. Know what you have." },
+          { q: "Do you have current ATLS certification and when does it expire?", hint: "ATLS is required at Level I and II trauma centers without exception. An expired ATLS will delay or kill a placement. Ask specifically about expiration, not just whether they have it." },
+          { q: "Is your ACLS current and do you hold PALS certification for facilities that see pediatric patients?", hint: "ACLS is universal. PALS is required at any ED that treats pediatric patients, which is most EDs. Confirm both are current before submitting to any facility." },
+          { q: "Have you had any malpractice claims filed against you, any hospital privilege actions, restrictions, or unexplained gaps in your CV?", hint: "Any YES answer on the Provider Questionnaire must go to Locums Review before the provider is presented to any facility. Ask this directly and treat it as a routine question, not an accusation. It is better to know on call one than at the 90-day credentialing mark." }
+        ]
+      }
+    ]
+  },
+
+  sales: {
+    sections: [
+      {
+        title: "Understanding the need",
+        tag: "specialty",
+        questions: [
+          { q: "What is the reason for this EM coverage need and how long has the gap been open?", hint: "The reason behind the need tells you urgency, complexity, and whether there are structural problems the locums provider will inherit. A gap caused by a physician on maternity leave is different from a gap caused by three physicians quitting." },
+          { q: "What is your annual ED visit volume and how would you characterize the acuity level: low, medium, or high?", hint: "Volume and acuity define the candidate profile entirely. A 15,000-visit rural ED needs a different physician than a 90,000-visit urban trauma center. Never source candidates without knowing this." },
+          { q: "What is your trauma designation and what does that require of your emergency physicians in terms of certifications?", hint: "Trauma designation drives ATLS requirements, case log expectations, and the intensity of coverage needed. This is non-negotiable information you must have before presenting any candidate." },
+          { q: "Where specifically are the coverage gaps: which days of the week, which shift types, and which times of day?", hint: "Gaps by specific shift tell you what kind of solution actually solves the problem. A facility short on overnight weekend coverage needs a different approach than one short across all shifts." },
+          { q: "How many open shifts do you have per month and is this a short-term bridge or an ongoing structural coverage need?", hint: "Short-term bridge versus ongoing structural need changes the entire sourcing strategy and the conversation about rate, commitment, and relationship." }
+        ]
+      },
+      {
+        title: "Facility and practice environment",
+        tag: "specialty",
+        questions: [
+          { q: "What shift length structure do you use: 8-hour, 10-hour, or 12-hour shifts, and how are shifts distributed across 24 hours?", hint: "Shift structure affects cost, candidate availability, and scheduling fit. A facility running 8-hour shifts with three overlapping providers is a very different environment than a 12-hour solo shift model." },
+          { q: "Will the locums physician be the sole emergency provider during their shift or will they work alongside other attendings or midlevels?", hint: "Solo coverage creates specific expectations around scope, risk, and independence. Providers will ask this question. Know the answer before they do." },
+          { q: "Do you have a fast track or split flow model and if so will the locums physician be assigned to the main ED, the fast track, or rotating between both?", hint: "Main ED vs fast track are different clinical environments. Know the assignment before presenting candidates who may have preferences." },
+          { q: "What specialist backup is available in-house and what is your transfer protocol for cases that exceed your scope or capacity?", hint: "Providers will ask this question every time. If backup is limited or transfer is the primary escalation path, that is information a provider needs to make an informed decision. Know it before they ask." },
+          { q: "Do your EM providers respond to floor codes as part of their coverage scope?", hint: "Floor code response is common at community hospitals. Providers who are not expecting this will be unhappy on day one. Surface it explicitly during the order intake, not after placement." },
+          { q: "What EMR system does your facility use and have you had locums physicians struggle to adapt to it in the past?", hint: "EMR friction is a predictable and preventable source of placement problems. Knowing the system lets you flag concerns early and prepare the provider appropriately." },
+          { q: "Do you offer scribes to your emergency providers and would that be available to a locums physician?", hint: "Scribe availability is a genuine competitive differentiator. Knowing this lets you lead with it as a selling point when presenting the opportunity to candidates." }
+        ]
+      },
+      {
+        title: "Coverage requirements and candidate expectations",
+        tag: "specialty",
+        questions: [
+          { q: "What board certification do you require: ABEM, AOBEM only, or will you consider FM or IM board-certified physicians with EM experience?", hint: "This directly determines your candidate pool. Restricting to ABEM/AOBEM in a competitive market for a rural facility may mean a very long sourcing timeline. Have an honest conversation about what the market looks like." },
+          { q: "What procedures will the locums physician be expected to perform independently: intubation, RSI, central lines, chest tubes, cricothyrotomy, cardioversion, FAST ultrasound?", hint: "Procedure requirements narrow the candidate pool. Knowing the full list upfront prevents the situation where a candidate is credentialed and then discovers on day one that they are expected to perform procedures they have not done in years." },
+          { q: "Do you require ATLS certification for this role and if so is there flexibility on timing if a strong candidate needs to recertify?", hint: "ATLS recertification can be done relatively quickly for a lapsed provider. Knowing whether there is flexibility can open the candidate pool at the right moment." },
+          { q: "Is POCUS (point-of-care ultrasound) required, preferred, or not a factor for this position?", hint: "POCUS is increasingly expected. Knowing the facility's requirement allows you to accurately filter candidates and set expectations." },
+          { q: "Are you open to physicians who practice primarily in community ED settings rather than high-acuity trauma centers, given your volume and acuity level?", hint: "This is an honest fit conversation. A community EM physician may be a perfect match for a community ED role. Do not filter them out by defaulting to trauma center experience requirements." }
+        ]
+      },
+      {
+        title: "Credentialing and start timeline",
+        tag: "specialty",
+        questions: [
+          { q: "How long does your facility credentialing process typically take for emergency physicians from file submission to privilege approval?", hint: "EM credentialing with ATLS verification, procedure credentialing, and malpractice history review can take longer than standard credentialing. Knowing the timeline is critical for setting realistic start date expectations." },
+          { q: "Do you offer temporary or provisional privileges that would allow a physician to begin seeing patients before full privilege approval?", hint: "Provisional privileges are the single most effective tool for compressing start timelines. Always ask. A facility that offers them can start providers weeks or months earlier than one that does not." },
+          { q: "Who is the credentialing contact in your Medical Staff Office and when are the next scheduled committee meeting dates for privilege approvals?", hint: "Committee meeting dates are the invisible deadline in every hospital placement. Missing a meeting date can delay a start by 30 to 60 days. Get these dates on your first call." },
+          { q: "Does your facility have a locums-friendly credentialing process or has locums credentialing been a source of friction in the past?", hint: "Some facilities have streamlined locums credentialing. Others treat every locums provider like a new permanent hire. Knowing this upfront shapes your delivery timeline and your promises to the candidate." }
+        ]
+      },
+      {
+        title: "Rate, logistics, and relationship",
+        tag: "specialty",
+        questions: [
+          { q: "What daily or hourly rate range have you worked with for locums EM coverage in the past and what is your current budget for this need?", hint: "Getting the rate range on the table early prevents the late-stage budget surprise that wastes everyone's time. EM locums rates vary significantly by volume, acuity, location, and coverage type." },
+          { q: "What is your travel and housing budget for this locums engagement and is there any on-site lodging available?", hint: "Housing and travel support is a genuine competitive differentiator. Facilities that offer lodging or a meaningful housing stipend attract candidates faster. Know what you can offer before sourcing." },
+          { q: "Who manages the emergency medicine program at your facility: the hospital directly or an external management group?", hint: "Management structure affects decision-making authority, contracting speed, and who ultimately controls locums physician selection. Know who the real decision maker is." },
+          { q: "Have you used locums EM coverage before and if so what has worked well and what has been a challenge?", hint: "This is the relationship question. The answer tells you exactly what this client values, what problems they need solved, and how TrueNorth LT can position itself as a different kind of partner." },
+          { q: "What does a successful locums engagement look like from your perspective and what would make this experience exceptional?", hint: "Setting shared expectations on the first call creates the foundation for a long-term relationship. Clients who feel heard and understood stay loyal. This question does that." }
+        ]
+      }
+    ]
+  },
+
+  credentialing: {
+    universal: [
+      "Credentialing does not begin until the provider signs the Assignment Confirmation and release authorizations.",
+      "Client credentialing and privilege approval typically runs 60 to 120 days from complete file submission. Set this expectation on every first call.",
+      "Temporary or provisional privileges can compress the timeline significantly. Always ask the facility whether they are available.",
+      "Current CV required in MM/YYYY to MM/YYYY format. Every gap must be explained in writing. Unexplained gaps hold files.",
+      "Active state medical license required for every state of practice. DEA must match the assignment state.",
+      "2 to 3 peer references from individuals with equal or higher title required.",
+      "NPDB self-query required from the provider.",
+      "Malpractice claims history and prior certificates of insurance (COI) verified.",
+      "OIG and SAM exclusion checks completed by both agency and client.",
+      "Criminal background check required, typically covering 7 years.",
+      "Work history and hospital affiliation verification including any terminations, investigations, or voluntary resignations.",
+      "Any YES answers on the Provider Questionnaire must go to Locums Review before the provider is presented to any facility. No exceptions.",
+      "Hospital privileging application submitted to Medical Staff Office. Get committee meeting dates on the first call. Missing a meeting can delay a start by 30 to 60 days."
+    ],
+    specialty: [
+      "ACLS certification required at all ED settings. Confirm currency and expiration date.",
+      "ATLS certification required at Level I and Level II trauma centers without exception. Confirm expiration date, not just whether they have it.",
+      "PALS required at any ED that sees pediatric patients, which is the majority of ED placements.",
+      "Board certification through ABEM or AOBEM strongly preferred. FM or IM board-certified candidates accepted at some community EDs but not all. Confirm facility policy before submitting.",
+      "Procedure credentialing documentation required for: endotracheal intubation, RSI, central line placement, chest tube insertion, cricothyrotomy, cardioversion, lumbar puncture, and FAST ultrasound where applicable.",
+      "POCUS credentialing: if the facility requires POCUS, confirm the provider's training documentation and which applications they are credentialed in.",
+      "DEA registration active in the state of the assignment. Confirm schedule coverage matches the role.",
+      "Trauma case logs may be required at Level I centers. Ask the facility before presenting any candidate.",
+      "Malpractice history review: EM providers carry higher malpractice risk due to high-acuity decision-making. Any claims should be reviewed by Locums Review proactively.",
+      "Confirm whether the facility requires ATLS recertification documentation or whether a lapsed ATLS can be recertified before the start date.",
+      "Board eligibility vs board certification: some community facilities accept board-eligible candidates within a defined window post-residency. Confirm facility policy."
+    ]
+  },
+
+  general: {
+    recruiter: [
+      { q: "Are you currently working with any other locums agencies and if so how are those relationships going?", hint: "Understanding their existing locums relationships tells you where TrueNorth LT fits and what gaps or frustrations you can solve. This is also a relationship-building question." },
+      { q: "What is the most important factor in choosing a locums engagement: rate, location, schedule flexibility, facility type, or something else?", hint: "Knowing their decision hierarchy lets you lead with what matters to them rather than what matters to you. Every provider is different." },
+      { q: "Is there anything about your personal or professional situation right now that I should understand as we look at opportunities together?", hint: "Open-ended and humanizing. Some providers are going through transitions, relocations, family changes. Knowing the full picture lets you serve them better and builds the kind of trust that creates long-term relationships." }
+    ],
+    sales: [
+      { q: "Who else at your facility is involved in the decision to bring on locums coverage and should they be part of our next conversation?", hint: "Identifying all stakeholders early prevents the late-stage surprise of a decision maker you never met. The CMO, CNO, and MSO director may all have a voice." },
+      { q: "What is your timeline for needing coverage in place and is there a hard deadline driven by a contract, accreditation, or patient care concern?", hint: "Hard deadlines change the urgency of every subsequent conversation. Knowing about a Joint Commission survey or a contract expiration makes your sourcing more targeted and your communication more relevant." },
+      { q: "Have you worked with TrueNorth LT or our team before and if not what prompted you to reach out at this time?", hint: "Understanding the entry point and any prior relationship history sets the context for everything that follows. Existing relationship? Build on it. New relationship? Understand what brought them here." }
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let mode             = 'recruiter';
+let contact          = '';
+let contactEmail     = '';
+let contactPhone     = '';
+let contactNPI       = '';
+let allQuestions     = [];
+let currentSummaryText = '';
+
+// ── localStorage helpers ──
+function localSessions() {
+  try { return JSON.parse(localStorage.getItem('truenorth_sessions') || '[]'); } catch(e) { return []; }
+}
+function localSessionsWrite(arr) {
+  localStorage.setItem('truenorth_sessions', JSON.stringify(arr));
+}
+
+// ── boot ──
+window.addEventListener('DOMContentLoaded', () => {
+  showHeaderBtns(false);
+  showScreen('setup-screen');
+});
+
+function showHeaderBtns(inSession) {
+  document.getElementById('hdr-dash-btn').style.display = inSession ? '' : 'none';
+  document.getElementById('hdr-new-btn').style.display  = inSession ? '' : 'none';
+}
+
+// ── screen router ──
+function showScreen(id) {
+  ['dashboard-screen','detail-screen','setup-screen','session-screen'].forEach(s => {
+    const el = document.getElementById(s);
+    if (el) el.style.display = (s === id) ? '' : 'none';
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════════
+function showDashboard() {
+  showHeaderBtns(true);
+  showScreen('dashboard-screen');
+  renderSessionList(localSessions().slice().sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt)));
+}
+
+function renderSessionList(sessions) {
+  const container = document.getElementById('session-list');
+  if (!sessions.length) {
+    container.innerHTML =
+      '<div class="dash-empty">' +
+        '<div class="dash-empty-icon">📋</div>' +
+        '<div class="dash-empty-title">No sessions saved yet</div>' +
+        '<div class="dash-empty-sub">Complete a call and save the summary to see it here.</div>' +
+      '</div>';
+    return;
+  }
+  container.innerHTML = sessions.map(s => {
+    const d    = new Date(s.createdAt);
+    const date = d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) +
+                 ' · ' + d.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+    const modeLabel = s.mode === 'sales' ? 'Sales / AM' : 'Recruiter';
+    const stat = s.totalQuestions ? s.questionsAnswered + ' / ' + s.totalQuestions + ' questions covered' : '';
+    return (
+      '<div class="session-card">' +
+        '<div class="sc-left">' +
+          '<div class="sc-date">' + date + '</div>' +
+          '<div class="sc-contact">' + escHtml(s.contact) + '</div>' +
+          '<div class="sc-meta">' +
+            '<span class="sc-badge ' + s.mode + '">' + modeLabel + '</span>' +
+            (stat ? '<span class="sc-stat">' + stat + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="sc-right">' +
+          '<button class="sc-view-btn" onclick="viewSession(' + JSON.stringify(s).split('"').join('&quot;') + ')">View summary</button>' +
+          '<button class="sc-del-btn" onclick="deleteSession(\'' + s.id + '\')" title="Delete">✕</button>' +
+        '</div>' +
+      '</div>'
+    );
+  }).join('');
+}
+
+function deleteSession(id) {
+  if (!confirm('Delete this session? This cannot be undone.')) return;
+  localSessionsWrite(localSessions().filter(s => s.id !== id));
+  showDashboard();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DETAIL SCREEN
+// ═══════════════════════════════════════════════════════════════
+function viewSession(session) {
+  if (typeof session === 'string') { try { session = JSON.parse(session); } catch(e) { return; } }
+  const d    = new Date(session.createdAt);
+  const date = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' }) +
+               ' at ' + d.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+  const modeLabel = session.mode === 'sales' ? 'Sales / AM' : 'Recruiter';
+  const stat = session.totalQuestions ? session.questionsAnswered + ' / ' + session.totalQuestions + ' questions covered' : '';
+
+  document.getElementById('det-contact').textContent  = session.contact;
+  document.getElementById('det-badge').className      = 'sc-badge ' + session.mode;
+  document.getElementById('det-badge').textContent    = modeLabel;
+  document.getElementById('det-date').textContent     = date;
+  document.getElementById('det-stat').textContent     = stat;
+  document.getElementById('det-sum-body').textContent = session.summary;
+  showScreen('detail-screen');
+}
+
+function copyDetail() {
+  const text = document.getElementById('det-sum-body').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn  = document.querySelector('.det-sum-top .copy-btn');
+    const orig = btn.textContent;
+    btn.textContent = 'Copied.';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SETUP
+// ═══════════════════════════════════════════════════════════════
+function setMode(m) {
+  mode = m;
+  document.getElementById('btn-rec').classList.toggle('active', m === 'recruiter');
+  document.getElementById('btn-sal').classList.toggle('active', m === 'sales');
+}
+
+function startSession() {
+  contact      = document.getElementById('contact-name').value.trim();
+  contactNPI   = document.getElementById('contact-npi').value.trim();
+  contactEmail = document.getElementById('contact-email').value.trim();
+  contactPhone = document.getElementById('contact-phone').value.trim();
+  buildSession();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SESSION BUILD
+// ═══════════════════════════════════════════════════════════════
+function buildSession() {
+  const modeLabel = mode === 'recruiter' ? 'Recruiter. Provider call' : 'Sales. Client call';
+  document.getElementById('ctx-mode').textContent  = modeLabel;
+  document.getElementById('ctx-title').textContent = contact || 'Emergency Medicine Call';
+  document.getElementById('ctx-sub').textContent   = contact ? 'Emergency Medicine · ' + modeLabel : '';
+
+  // detail line: NPI, email, phone
+  const detailEl = document.getElementById('ctx-detail');
+  const parts = [];
+  if (contactNPI)   parts.push('<span>NPI ' + escHtml(contactNPI) + '</span>');
+  if (contactEmail) parts.push('<span>' + escHtml(contactEmail) + '</span>');
+  if (contactPhone) parts.push('<span>' + escHtml(contactPhone) + '</span>');
+  detailEl.innerHTML = parts.join('<span style="color:var(--border-strong)">·</span>');
+
+  buildQuestions();
+  buildCred();
+
+  currentSummaryText = '';
+  const saveBtn = document.getElementById('save-session-btn');
+  saveBtn.textContent       = 'Save to dashboard';
+  saveBtn.disabled          = false;
+  saveBtn.style.background  = '';
+  saveBtn.style.color       = '';
+  saveBtn.style.borderColor = '';
+
+  document.getElementById('summary-box').classList.remove('visible');
+  showHeaderBtns(true);
+  showScreen('session-screen');
+  switchTab('q');
+  updateProgress();
+}
+
+function buildQuestions() {
+  allQuestions = [];
+  const list    = document.getElementById('q-list');
+  list.innerHTML = '';
+  const pool    = EM_DATA[mode];
+  const genPool = EM_DATA.general[mode] || [];
+
+  pool.sections.forEach(section => {
+    list.appendChild(makeDivider(section.title));
+    section.questions.forEach(item => {
+      item._type = section.tag;
+      allQuestions.push(item);
+      list.appendChild(makeQCard(item, allQuestions.length - 1));
+    });
+  });
+
+  if (genPool.length > 0) {
+    list.appendChild(makeDivider('General locums questions'));
+    genPool.forEach(item => {
+      item._type = 'general';
+      allQuestions.push(item);
+      list.appendChild(makeQCard(item, allQuestions.length - 1));
+    });
+  }
+
+  document.getElementById('q-count-label').textContent = '(' + allQuestions.length + ')';
+}
+
+function makeDivider(text) {
+  const d = document.createElement('div');
+  d.className   = 'sec-div';
+  d.textContent = text;
+  return d;
+}
+
+function makeQCard(item, idx) {
+  const c = document.createElement('div');
+  c.className = 'q-card';
+  c.id        = 'qcard-' + idx;
+  const tagLabel = item._type === 'specialty' ? 'EM Specific' : 'General';
+  c.innerHTML =
+    '<div class="q-meta">' +
+      '<span class="q-num">Q' + String(idx + 1).padStart(2, '0') + '</span>' +
+      '<span class="q-tag ' + item._type + '">' + tagLabel + '</span>' +
+      '<label class="q-check-wrap" for="check-' + idx + '">' +
+        '<input type="checkbox" class="q-check" id="check-' + idx + '" onchange="onCheckChange(' + idx + ')">' +
+        '<span class="q-check-label">Asked</span>' +
+      '</label>' +
+    '</div>' +
+    '<div class="q-text">' + item.q + '</div>' +
+    '<div class="q-hint">' + item.hint + '</div>' +
+    '<textarea class="q-note" placeholder="Notes…" id="note-' + idx + '" oninput="updateProgress()"></textarea>';
+  return c;
+}
+
+function onCheckChange(idx) {
+  const chk  = document.getElementById('check-' + idx);
+  const card = document.getElementById('qcard-' + idx);
+  card.classList.toggle('covered', chk.checked);
+  updateProgress();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CREDENTIALING
+// ═══════════════════════════════════════════════════════════════
+function buildCred() {
+  const panel = document.getElementById('cred-content');
+  panel.innerHTML = '';
+
+  function makeCredBox(cls, title, items) {
+    const box = document.createElement('div');
+    box.className = 'cred-box ' + cls;
+    let html = '<div class="cred-box-title"><span class="cred-dot"></span>' + title + '</div>';
+    items.forEach((item, i) => {
+      const uid = cls + '-' + i;
+      html +=
+        '<div class="cred-item" id="creditem-' + uid + '">' +
+          '<input type="checkbox" class="cred-check" id="credchk-' + uid + '" onchange="toggleCredItem(\'' + uid + '\')">' +
+          '<span class="cred-item-text">' + item + '</span>' +
+        '</div>';
+    });
+    box.innerHTML = html;
+    return box;
+  }
+
+  panel.appendChild(makeCredBox('universal', 'Universal credentialing requirements', EM_DATA.credentialing.universal));
+
+  const sbox = makeCredBox('specialty', 'Emergency Medicine. Specialty credentialing flags', EM_DATA.credentialing.specialty);
+  sbox.style.marginTop = '10px';
+  panel.appendChild(sbox);
+
+  const nwrap = document.createElement('div');
+  nwrap.style.marginTop = '1.25rem';
+  nwrap.innerHTML =
+    '<div class="sec-div">Credentialing notes from this call</div>' +
+    '<div class="q-card">' +
+      '<div class="q-text">Credentialing notes</div>' +
+      '<div class="q-hint">Record license status, DEA status, board certification, ATLS/ACLS expiration dates, pending applications, any claims or gaps surfaced during this call, and committee meeting dates if applicable.</div>' +
+      '<textarea class="q-note" id="note-cred" placeholder="e.g. ABEM board certified, expires 2027. ATLS current, expires 2026. Active IL license. Applying for TX DEA. No prior claims. Target start May…" style="min-height:90px;"></textarea>' +
+    '</div>';
+  panel.appendChild(nwrap);
+}
+
+function toggleCredItem(uid) {
+  const chk  = document.getElementById('credchk-' + uid);
+  const item = document.getElementById('creditem-' + uid);
+  item.classList.toggle('done', chk.checked);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TABS AND PROGRESS
+// ═══════════════════════════════════════════════════════════════
+function switchTab(tab) {
+  ['q', 'c', 's'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+    document.getElementById('panel-' + t).classList.toggle('active', t === tab);
+  });
+}
+
+function updateProgress() {
+  const total = allQuestions.length;
+  if (total === 0) return;
+  let covered = 0;
+  allQuestions.forEach((_, i) => {
+    const chk = document.getElementById('check-' + i);
+    const el  = document.getElementById('note-' + i);
+    if ((chk && chk.checked) || (el && el.value.trim().length > 0)) covered++;
+  });
+  document.getElementById('progress-fill').style.width = Math.round((covered / total) * 100) + '%';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SUMMARY
+// ═══════════════════════════════════════════════════════════════
+function generateSummary() {
+  const now       = new Date();
+  const dateStr   = now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+  const modeLabel = mode === 'recruiter' ? 'Provider Call' : 'Client / Facility Call';
+
+  let out = 'TRUENORTH LT — EMERGENCY MEDICINE CALL SUMMARY\n';
+  out += '='.repeat(50) + '\n';
+  out += 'Date:       ' + dateStr + '\n';
+  out += 'Call type:  ' + modeLabel + '\n';
+  out += 'Specialty:  Emergency Medicine\n';
+  if (contact)      out += 'Contact:    ' + contact + '\n';
+  if (contactNPI)   out += 'NPI:        ' + contactNPI + '\n';
+  if (contactEmail) out += 'Email:      ' + contactEmail + '\n';
+  if (contactPhone) out += 'Phone:      ' + contactPhone + '\n';
+  out += '\n';
+
+  let globalIdx = 0;
+  const pool    = EM_DATA[mode];
+  const genPool = EM_DATA.general[mode] || [];
+
+  pool.sections.forEach(section => {
+    const sectionNotes = [];
+    section.questions.forEach(() => {
+      const chk  = document.getElementById('check-' + globalIdx);
+      const el   = document.getElementById('note-' + globalIdx);
+      const note = el ? el.value.trim() : '';
+      const asked = chk && chk.checked;
+      if (note || asked) {
+        sectionNotes.push({
+          q:    allQuestions[globalIdx].q,
+          note: note || (asked ? '(asked — no notes)' : '')
+        });
+      }
+      globalIdx++;
+    });
+    if (sectionNotes.length > 0) {
+      out += section.title.toUpperCase() + '\n' + '-'.repeat(40) + '\n';
+      sectionNotes.forEach(item => { out += '\n' + item.q + '\n' + item.note + '\n'; });
+      out += '\n';
+    }
+  });
+
+  const genNotes = [];
+  genPool.forEach(() => {
+    const chk  = document.getElementById('check-' + globalIdx);
+    const el   = document.getElementById('note-' + globalIdx);
+    const note = el ? el.value.trim() : '';
+    const asked = chk && chk.checked;
+    if (note || asked) genNotes.push({ q: allQuestions[globalIdx].q, note: note || '(asked — no notes)' });
+    globalIdx++;
+  });
+  if (genNotes.length > 0) {
+    out += 'GENERAL NOTES\n' + '-'.repeat(40) + '\n';
+    genNotes.forEach(item => { out += '\n' + item.q + '\n' + item.note + '\n'; });
+    out += '\n';
+  }
+
+  const credNote = document.getElementById('note-cred');
+  if (credNote && credNote.value.trim()) {
+    out += 'CREDENTIALING NOTES\n' + '-'.repeat(40) + '\n';
+    out += credNote.value.trim() + '\n\n';
+  }
+
+  out += '='.repeat(50) + '\n';
+  out += 'Generated by TrueNorth LT — Emergency Medicine v2.0\n';
+  out += 'Next step: upload to CRM or share with privileging team.';
+
+  currentSummaryText = out;
+
+  const saveBtn = document.getElementById('save-session-btn');
+  saveBtn.textContent       = 'Save to dashboard';
+  saveBtn.disabled          = false;
+  saveBtn.style.background  = '';
+  saveBtn.style.color       = '';
+  saveBtn.style.borderColor = '';
+
+  document.getElementById('sum-body').textContent = out;
+  document.getElementById('summary-box').classList.add('visible');
+  switchTab('s');
+}
+
+function copySummary() {
+  navigator.clipboard.writeText(document.getElementById('sum-body').textContent).then(() => {
+    const btn  = document.querySelector('.sum-top-actions .copy-btn');
+    const orig = btn.textContent;
+    btn.textContent = 'Copied.';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+// ── save to dashboard ──
+function saveSession() {
+  if (!currentSummaryText) return;
+  const btn = document.getElementById('save-session-btn');
+  btn.textContent = 'Saving…';
+  btn.disabled    = true;
+
+  let covered = 0;
+  allQuestions.forEach((_, i) => {
+    const chk = document.getElementById('check-' + i);
+    const el  = document.getElementById('note-' + i);
+    if ((chk && chk.checked) || (el && el.value.trim())) covered++;
+  });
+
+  try {
+    const sessions = localSessions();
+    sessions.push({
+      id:                Date.now().toString(),
+      createdAt:         new Date().toISOString(),
+      contact:           contact || 'Emergency Medicine Call',
+      mode,
+      summary:           currentSummaryText,
+      questionsAnswered: covered,
+      totalQuestions:    allQuestions.length,
+    });
+    localSessionsWrite(sessions);
+    btn.textContent       = 'Saved ✓';
+    btn.style.background  = 'var(--green)';
+    btn.style.color       = '#fff';
+    btn.style.borderColor = 'var(--green)';
+  } catch(e) {
+    btn.textContent = 'Save failed — retry';
+    btn.disabled    = false;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RESET
+// ═══════════════════════════════════════════════════════════════
+function resetApp() {
+  document.getElementById('contact-name').value  = '';
+  document.getElementById('contact-npi').value   = '';
+  document.getElementById('contact-email').value = '';
+  document.getElementById('contact-phone').value = '';
+  document.getElementById('progress-fill').style.width = '0%';
+  mode             = 'recruiter';
+  contact          = '';
+  contactEmail     = '';
+  contactPhone     = '';
+  contactNPI       = '';
+  allQuestions     = [];
+  currentSummaryText = '';
+  document.getElementById('btn-rec').classList.add('active');
+  document.getElementById('btn-sal').classList.remove('active');
+  showHeaderBtns(false);
+  showScreen('setup-screen');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// UTILITY
+// ═══════════════════════════════════════════════════════════════
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
